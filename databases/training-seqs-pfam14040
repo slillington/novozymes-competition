@@ -1,0 +1,65 @@
+# hmmsearch :: search profile(s) against a sequence database
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query HMM file:                  DNase_NucA_NucB.hmm
+# target sequence database:        training_set.fasta
+# output directed to file:         training-seqs-pfam14040
+# domain reporting threshold:      E-value <= 0.01
+# number of worker threads:        8
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       DNase_NucA_NucB  [M=113]
+Accession:   PF14040.9
+Description: Deoxyribonuclease NucA/NucB
+Scores for complete sequences (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Sequence      Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------      -----------
+  ------ inclusion threshold ------
+       0.15   13.4   0.0        5.7    8.3   0.0    2.6  1  7780_Tm=70.7   
+       0.16   13.3   0.2       0.43   11.9   0.2    1.7  1  24606_Tm=50.4  
+
+
+Domain annotation for each sequence (and alignments):
+>> 7780_Tm=70.7  
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    8.3   0.0   0.00036       5.7      53      90 ..     503     540 ..     481     541 .] 0.88
+
+  Alignments for each domain:
+  == domain 1  score: 8.3 bits;  conditional E-value: 0.00036
+  DNase_NucA_NucB  53 sslpykkigkscDEfPfAstkEggkgAslrcvplseNs 90 
+                      s   ++ ++ ++D +      E+g++A  r++  +eN+
+     7780_Tm=70.7 503 SDYDFEFVLIDRDQYDIRKAMESGRNAIERYIMERENE 540
+                      5567888999**************************96 PP
+
+>> 24606_Tm=50.4  
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   11.9   0.2   2.8e-05      0.43      26      94 ..     621     691 ..     614     700 .. 0.84
+
+  Alignments for each domain:
+  == domain 1  score: 11.9 bits;  conditional E-value: 2.8e-05
+  DNase_NucA_NucB  26 eltldadksktndrRkaagcsgspcsasslpykkig..kscDEfPfAstkEggkgAslrcvplseNsseGg 94 
+                      +l+l+a +s t++    +  sgspc ++  p  k     s D    A + E+gk     cv + +N  +Gg
+    24606_Tm=50.4 621 SLLLRAVPSLTPAANTGSSASGSPCEQLPTPVRKGTeeASGDTRKEAGSDESGKTLMTECVSSVDNVHDGG 691
+                      56777888888888999999******998888875412688999**************************9 PP
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query model(s):                            1  (113 nodes)
+Target sequences:                      31390  (14052346 residues searched)
+Passed MSV filter:                       711  (0.0226505); expected 627.8 (0.02)
+Passed bias filter:                      423  (0.0134756); expected 627.8 (0.02)
+Passed Vit filter:                        24  (0.000764575); expected 31.4 (0.001)
+Passed Fwd filter:                         2  (6.37146e-05); expected 0.3 (1e-05)
+Initial search space (Z):              31390  [actual number of targets]
+Domain search space  (domZ):               2  [number of targets reported over threshold]
+# CPU time: 0.10u 0.01s 00:00:00.11 Elapsed: 00:00:00.04
+# Mc/sec: 35525.42
+//
+[ok]
