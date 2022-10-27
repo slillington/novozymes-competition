@@ -103,7 +103,7 @@ def downloadPdb(idlist):
     #Now run batch_download.sh script
     #os.chdir("../")
     #Needs the 
-    bash_dir = "/home/slillington/novozymes-competition/databases/clustering/subtraining_clusterPDBs/"
+    bash_dir = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/"
     sp_state = bash_dir + "pdb_batch_download.sh -f " + bash_dir + "pdblist.csv -p"    
 
     subprocess.call(sp_state,shell=True)
@@ -123,7 +123,7 @@ def main():
     training_set = pd.read_csv("train.csv")
 
     #Take the top 10
-    top10 = clusters.iloc[:50,0].tolist()
+    top10 = clusters.iloc[:60,0].tolist()
     #print(top10)
 
     #Cut off only the pre "_"
