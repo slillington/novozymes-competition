@@ -1,0 +1,16 @@
+--2022-10-27 14:49:48--  https://files.rcsb.org/download/1BNJ.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘1BNJ.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.60M
+    50K .......... .......... .......... .......... .......... 4.57M
+   100K .......... .......... .......... .......... ..........  241M
+   150K .......... .......... .......... .......... .......... 7.35M
+   200K .......... .......... .......... .......... .......... 19.9M
+   250K ..........                                             13.6M=0.03s
+
+2022-10-27 14:49:48 (7.40 MB/s) - ‘1BNJ.pdb.1’ saved [266247]
+

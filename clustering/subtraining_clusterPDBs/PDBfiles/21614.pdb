@@ -1,0 +1,13 @@
+--2022-10-27 14:49:50--  https://files.rcsb.org/download/3A0J.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘3A0J.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.63M
+    50K .......... .......... .......... .......... .......... 9.25M
+   100K .......... .......... .......... .......               12.5M=0.02s
+
+2022-10-27 14:49:50 (6.19 MB/s) - ‘3A0J.pdb.1’ saved [140697]
+

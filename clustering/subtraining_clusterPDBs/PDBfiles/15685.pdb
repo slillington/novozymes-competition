@@ -1,0 +1,16 @@
+--2022-10-27 14:49:48--  https://files.rcsb.org/download/7VSD.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘7VSD.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.80M
+    50K .......... .......... .......... .......... .......... 8.05M
+   100K .......... .......... .......... .......... .......... 10.0M
+   150K .......... .......... .......... .......... .......... 9.47M
+   200K .......... .......... .......... .......... .......... 8.52M
+   250K                                                         831G=0.03s
+
+2022-10-27 14:49:48 (7.05 MB/s) - ‘7VSD.pdb.1’ saved [256446]
+
