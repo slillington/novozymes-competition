@@ -1,0 +1,12 @@
+--2022-10-27 20:12:12--  https://files.rcsb.org/download/2CI2.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘2CI2.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.67M
+    50K .......... .......... .......                          14.4M=0.02s
+
+2022-10-27 20:12:12 (4.98 MB/s) - ‘2CI2.pdb.1’ saved [79137]
+

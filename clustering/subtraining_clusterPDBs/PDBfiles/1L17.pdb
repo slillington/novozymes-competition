@@ -1,0 +1,14 @@
+--2022-10-27 20:12:10--  https://files.rcsb.org/download/1L17.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘1L17.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.66M
+    50K .......... .......... .......... .......... .......... 4.75M
+   100K .......... .......... .......... .......... .......... 37.8M
+   150K ....                                                   15.3M=0.03s
+
+2022-10-27 20:12:10 (5.99 MB/s) - ‘1L17.pdb.1’ saved [158031]
+

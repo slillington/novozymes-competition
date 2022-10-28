@@ -1,0 +1,16 @@
+--2022-10-27 20:12:18--  https://files.rcsb.org/download/1R50.pdb
+Resolving files.rcsb.org (files.rcsb.org)... 132.249.210.234
+Connecting to files.rcsb.org (files.rcsb.org)|132.249.210.234|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [application/octet-stream]
+Saving to: ‘1R50.pdb.1’
+
+     0K .......... .......... .......... .......... .......... 3.49M
+    50K .......... .......... .......... .......... .......... 9.29M
+   100K .......... .......... .......... .......... .......... 11.0M
+   150K .......... .......... .......... .......... .......... 4.50M
+   200K .......... .......... .......... .......... .......... 84.4M
+   250K .......... ..........                                  39.9M=0.04s
+
+2022-10-27 20:12:18 (7.42 MB/s) - ‘1R50.pdb.1’ saved [276939]
+

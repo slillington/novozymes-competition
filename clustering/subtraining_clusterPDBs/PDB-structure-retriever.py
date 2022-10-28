@@ -98,6 +98,7 @@ def downloadPdb(idlist):
         os.chdir(os.path.join(os.getcwd(),"PDBfiles"))
     else:
         os.mkdir(os.path.join(os.getcwd(),"PDBfiles"))
+        os.chdir(os.path.join(os.getcwd(),"PDBfiles"))
 
     print("CWD is %s" %os.getcwd())
     #Now run batch_download.sh script
@@ -110,8 +111,8 @@ def downloadPdb(idlist):
 
     #Rename each file
     for id in idlist.keys():
-        if os.path.isfile(str(id)+".pdb"):
-            os.rename(str(id)+".pdb",str(idlist[id])+".pdb")
+        if os.path.isfile(str(id)+".pdb.1"):
+            os.rename(str(id)+".pdb.1",str(idlist[id])+".pdb")
 
     return
 
