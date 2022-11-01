@@ -62,7 +62,7 @@ def getPDBforSeq(sequence='',searchRequest=def_search_request):
     cutoffs = [0.7,0.5,0.3]
     i=0
     while r.text == "":
-        print("No match for identity cutoff = %.1f, trying lower ID cutoff" %cutoffs[i])
+        print("No match for identity cutoff = %.1f, trying lower ID cutoff for \n%s" %(cutoffs[i],sequence))
         searchRequest = changeSearchRequest(jsonRequest=searchRequest,sequence=sequence,id_cutoff=cutoffs[i])
         r = requests.post(pdburl,data=searchRequest)
         i += 1
@@ -148,7 +148,7 @@ def main():
     print(idlist)
 
     #Now call the batch script and download the PDBs
-    downloadPdb(idlist)
+    #downloadPdb(idlist)
 
 
 
