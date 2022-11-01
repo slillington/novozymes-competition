@@ -123,7 +123,7 @@ disulfide_bonds = np.array(disulfide_bonds)
 
 plt.figure(figsize=[3,3])
 plt.plot([0,t.n_residues], [0,t.n_residues], '-k', lw = 0.5)
-plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.5)
+plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.4)
 plt.xlabel('Res ID')
 plt.ylabel('Res ID')
 title = args.name + '_contacts'
@@ -131,30 +131,34 @@ plt.savefig(title+'.png',dpi=500,transparent=False,bbox_inches="tight")
 if len(sec_struc_contacts):
     plt.figure(figsize=[3,3])
     plt.plot([0,t.n_residues], [0,t.n_residues], '-k', lw = 0.5)
-    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.5)
-    plt.plot(sec_struc_contacts[:,0], sec_struc_contacts[:,1], marker = '^', ls = 'None', ms = 2, c='k', alpha = 0.5, label='secondary')
+    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.4)
+    plt.plot(sec_struc_contacts[:,0], sec_struc_contacts[:,1], marker = '^', ls = 'None', ms = 3, c='k', label='special contacts')
     title = args.name + '_secondary_struc_contacts'
+    plt.legend(loc='best',prop={'size':5})
     plt.savefig(title+'.png',dpi=500,transparent=False,bbox_inches="tight")
 if len(hydrophobic_contacts):
     plt.figure(figsize=[3,3])
     plt.plot([0,t.n_residues], [0,t.n_residues], '-k', lw = 0.5)
-    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.5)
-    plt.plot(hydrophobic_contacts[:,0], hydrophobic_contacts[:,1], marker = 'x', ls = 'None', ms = 2, c='r', label='hydrophobic')
+    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.4)
+    plt.plot(hydrophobic_contacts[:,0], hydrophobic_contacts[:,1], marker = 'x', ls = 'None', ms = 3, c='r', label='special contacts')
     title = args.name + '_hydrophobic_contacts'
+    plt.legend(loc='best',prop={'size':5})
     plt.savefig(title+'.png',dpi=500,transparent=False,bbox_inches="tight")
 if len(salt_bridges):
     plt.figure(figsize=[3,3])
     plt.plot([0,t.n_residues], [0,t.n_residues], '-k', lw = 0.5)
-    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.5)
-    plt.plot(salt_bridges[:,0], salt_bridges[:,1], marker = 's', ls = 'None', ms = 2, c='b', alpha = 0.5, label='salt bridges')
+    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.4)
+    plt.plot(salt_bridges[:,0], salt_bridges[:,1], marker = 's', ls = 'None', ms = 3, c='b', label='special contacts')
     title = args.name + '_salt_bridges'
+    plt.legend(loc='best',prop={'size':5})
     plt.savefig(title+'.png',dpi=500,transparent=False,bbox_inches="tight")
 if len(disulfide_bonds):
     plt.figure(figsize=[3,3])
     plt.plot([0,t.n_residues], [0,t.n_residues], '-k', lw = 0.5)
-    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.5)
-    plt.plot(disulfide_bonds[:,0], disulfide_bonds[:,1], marker = '*', ls = 'None', ms = 2, alpha = 0.5, label='disulfide')
+    plt.plot(contacts[:,0], contacts[:,1], marker = 'o', ls = 'None', ms = 5, alpha = 0.4)
+    plt.plot(disulfide_bonds[:,0], disulfide_bonds[:,1], marker = '*', ls = 'None', ms = 3, label='special contacts')
     title = args.name + '_disulfide_bonds'
+    plt.legend(loc='best',prop={'size':5})
     plt.savefig(title+'.png',dpi=500,transparent=False,bbox_inches="tight")
 
 # write data
