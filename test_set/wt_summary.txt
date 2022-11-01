@@ -1,0 +1,15 @@
+Rg 1.9278 nm
+
+Probability of secondary structures:
+C: 0.5023
+E: 0.1991
+H: 0.2986
+- 'H' : Helix. Either of the 'H', 'G', or 'I' codes.
+- 'E' : Strand. Either of the 'E', or 'B' codes.
+- 'C' : Coil. Either of the 'T', 'S' or ' ' codes.
+
+2119 total contacts (cut off 0.8 nm)
+379 hydrophobic contacts
+860 secondary structure contacts
+47 salt bridges
+4 disulfide_bonds
