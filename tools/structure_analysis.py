@@ -70,8 +70,8 @@ footer += '\n' + s
 # parse output, assign a value (0 or 1) in each category for each residue
 helix = np.zeros(t.n_residues)
 helix[np.where(dssp == 'H')] = 1.
-beta_fold = np.zeros(t.n_residues)
-beta_fold[np.where(dssp == 'E')] = 1.
+strain = np.zeros(t.n_residues)
+strain[np.where(dssp == 'E')] = 1.
 
 #plot secondary structure prediction of each residue
 plt.figure(figsize=[3,2])
@@ -170,7 +170,7 @@ footer += '{} disulfide_bonds\n'.format(len(disulfide_bonds))
 print(footer)
 with open(args.name + '_summary.txt', 'w') as f:
     f.write(footer)
-data = np.stack((list(range(t.n_residues)), helix, beta_fold, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts),axis=1)
-np.savetxt(args.name+'_data.csv',data,fmt='%.1f',delimiter=",",header='res_id, is_helix, is_beta_fold, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts')
+data = np.stack((list(range(t.n_residues)), helix, strain, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts),axis=1)
+np.savetxt(args.name+'_data.csv',data,fmt='%.1f',delimiter=",",header='res_id, is_helix, is_strain, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts')
 
 
