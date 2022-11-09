@@ -30,7 +30,11 @@ for i in range(1,len(all_seqs)-1):
 #Now each cluster name (needs to be cleaned up) is a key
 #And the sequences that should be in the file are in the value string
 clusterSeqs_path = os.path.join(os.getcwd(),"clusterSeqs")
-os.mkdir(clusterSeqs_path)
+if os.path.isdir(clusterSeqs_path):
+    print("clusterSeqs dir exists")
+else:
+    os.mkdir(clusterSeqs_path)
+
 maxI = 60
 i = 0
 for s in sorted(new_cluster, key=lambda k: len(new_cluster[k]), reverse=True):
