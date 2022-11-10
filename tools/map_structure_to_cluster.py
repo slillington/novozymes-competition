@@ -134,7 +134,7 @@ def compute_contacts(pdb,alignment=None):
             if (aa_1_3_map[posi_mut] == 'CYS' or aa_1_3_map[posi_mut] == 'CYX') and (aa_1_3_map[posj_mut] == 'CYS' or aa_1_3_map[posj_mut] == 'CYX'):
                 disulfide_bonds.append([i,j]) 
                 in_disulfide_bonds[[i,j]] = 1.
-            elif (aa_1_3_map[posi_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']) or (aa_1_3_map[posi_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']):
+            elif (aa_1_3_map[posi_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']) or (aa_1_3_map[posj_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']):
                 salt_bridges.append([i,j])
                 in_salt_bridges[[i,j]] = 1.
             #else H-bonds if in the H-donors/acceptors list
