@@ -32,7 +32,7 @@ seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
 AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
 exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
 
-cluster = "27797"
+cluster = "972"
 
 
 
@@ -76,7 +76,7 @@ def compute_contacts(pdb,alignment=None):
                 gap_offset[i] = go
                 i +=1
 
-        #print(gap_offset)
+        print(len(gap_offset))
 
 
   # === Contacts ===
@@ -95,7 +95,11 @@ def compute_contacts(pdb,alignment=None):
     # assign contact if the distance bw pairs < rc
     # and characterize special contacts between:
     # hydrophobic residues, residues participating in a secondary structure ('E' or 'H')
+    
+    #print(pairs)
+    #d, pairs2 = md.compute_contacts(t,no_glypairs,scheme='sidechain-heavy')
     d, pairs = md.compute_contacts(t, contacts='all', scheme='ca')
+    #print(pairs2)
     d = np.squeeze(d)
     for ii, (i,j) in enumerate(pairs):
         if d[ii] < rc:
@@ -120,7 +124,15 @@ def compute_contacts(pdb,alignment=None):
     h_donors = ['ARG', 'ASN', 'GLN', 'HIS', 'LYS', 'SER', 'THR', 'TRP', 'TYR'] #https://www.imgt.org/IMGTeducation/Aide-memoire/_UK/aminoacids/charge/
     h_acceptors = ['ASN', 'ASP', 'GLN', 'GLU', 'HIS', 'SER', 'THR', 'TYR']
 
-    d, pairs = md.compute_contacts(t, contacts='all', scheme='closest-heavy') #scheme 'sidechain' should be more accurate but somehow doesn't work, maybe because of atom naming
+
+    no_gly_pairs = []
+    for i in range(t.n_residues-3):
+        for j in range(i+3,t.n_residues):
+            if seq[i] == 'GLY' or seq[j] == 'GLY':
+                continue        
+            no_gly_pairs.append((i,j)) 
+    d, pairs = md.compute_contacts(t, no_gly_pairs, scheme='sidechain') #Need to omit Gly because that has no sidechain and causes an error
+      
     d = np.squeeze(d)
     for ii, (i,j) in enumerate(pairs):
         #Use gap_offset to map the structure indices to the alignments
@@ -130,17 +142,20 @@ def compute_contacts(pdb,alignment=None):
         posj_pdb = alignment[0].seqA[j+gap_offset[j]]
         posj_mut = alignment[0].seqB[j+gap_offset[j]]
 
-        if d[ii] < 0.3:
-            if (aa_1_3_map[posi_mut] == 'CYS' or aa_1_3_map[posi_mut] == 'CYX') and (aa_1_3_map[posj_mut] == 'CYS' or aa_1_3_map[posj_mut] == 'CYX'):
-                disulfide_bonds.append([i,j]) 
-                in_disulfide_bonds[[i,j]] = 1.
-            elif (aa_1_3_map[posi_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']) or (aa_1_3_map[posj_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']):
+        if d[ii] < 0.4:
+            if (aa_1_3_map[posi_mut] in aa_groups['pos'] and aa_1_3_map[posj_mut] in aa_groups['neg']) or (aa_1_3_map[posj_mut] in aa_groups['pos'] and aa_1_3_map[posi_mut] in aa_groups['neg']):
                 salt_bridges.append([i,j])
                 in_salt_bridges[[i,j]] = 1.
             #else H-bonds if in the H-donors/acceptors list
-            elif (aa_1_3_map[posi_mut] in h_donors and aa_1_3_map[posi_mut] in h_acceptors) or (aa_1_3_map[posi_mut] in h_donors and aa_1_3_map[posi_mut] in h_acceptors):
+            elif (aa_1_3_map[posi_mut] in h_donors and aa_1_3_map[posj_mut] in h_acceptors) or (aa_1_3_map[posj_mut] in h_donors and aa_1_3_map[posi_mut] in h_acceptors):
                 h_bonds.append([i,j])
-                in_h_bonds[[i,j]] = 1.
+                in_h_bonds[[i,j]] = 1.        
+
+            elif d[ii] < 0.25 and (aa_1_3_map[posi_mut] == 'CYS' or aa_1_3_map[posi_mut] == 'CYX') and (aa_1_3_map[posj_mut] == 'CYS' or aa_1_3_map[posj_mut] == 'CYX'):
+                disulfide_bonds.append([i,j]) 
+                in_disulfide_bonds[[i,j]] = 1.
+
+        
 
     contacts = np.array(contacts)
     hydrophobic_contacts = np.array(hydrophobic_contacts )
@@ -270,13 +285,19 @@ def compute_struct_metrics(pdb, alignment):
 seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path,cluster+".fasta"),"r"),"fasta")]
 
 #Read in the structure file and pull out the sequence
-afpdb = md.load(os.path.join(AFstructure_path,cluster+".pdb"))
-aftop = afpdb.topology
-afpdb_seq = Seq(aftop.to_fasta()[0])
-
 epdb = md.load(os.path.join(exp_structure_path,cluster+".pdb"))
 etop = epdb.topology
 epdb_seq = Seq(etop.to_fasta()[0])
+
+if os.path.isfile(os.path.join(AFstructure_path,cluster+".pdb")):
+    afpdb = md.load(os.path.join(AFstructure_path,cluster+".pdb"))
+    aftop = afpdb.topology
+    afpdb_seq = Seq(aftop.to_fasta()[0])
+else:
+    afpdb = epdb
+    aftop = epdb.topology
+    afpdb_seq = afpdb_seq
+
 #print(pdb_seq)
 
 #Perform global alignment between two sequences
@@ -311,7 +332,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contact = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
