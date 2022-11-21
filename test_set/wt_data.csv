@@ -1,4 +1,4 @@
-# res_id, is_helix, is_beta_fold, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts
+# res_id, is_helix, is_strain, in_hydrophobic_contacts, in_salt_bridges, in_disulfide_bonds, in_sec_struc_contacts
 0.0,0.0,0.0,0.0,0.0,0.0,0.0
 1.0,0.0,0.0,0.0,0.0,0.0,0.0
 2.0,0.0,0.0,0.0,0.0,0.0,0.0
