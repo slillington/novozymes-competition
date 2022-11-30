@@ -76,8 +76,9 @@ def compute_contacts(pdb,alignment=None):
      alignment: Bio.pairwise2 alignment object
 
     OUTPUTS
-     Dictionary with contact counts of various kinds.
-     **Will return a list of two dicts if alignment provided
+     Dictionary with contact counts of various kinds computed by
+     mapping training set sequence to cluster.
+     
     """
 
     # remove non-protein residues:
@@ -312,6 +313,7 @@ def compute_struct_metrics(pdb, alignment):
     return ss_res, contacts, sasa_feature
 
 
+################## MAIN  METHOD ########################
 #Read in FASTA-formatted sequence file
 seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path,cluster+".fasta"),"r"),"fasta")]
 

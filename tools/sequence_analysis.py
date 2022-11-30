@@ -29,5 +29,3 @@ def get_aa_polarity(aa_code):
 def get_aa_charge(aa_code):
     charge = {'R':1, 'H':0, 'K':1, 'D':-1, 'E':-1, 'S':0, 'T':0, 'N':0, 'Q':0, 'C':0, 'G':0, 'P':0, 'A':0, 'V':0, 'I':0, 'L':0, 'M':0, 'F':0, 'Y':0, 'W':0}
     return charge[aa_code]
-
-
