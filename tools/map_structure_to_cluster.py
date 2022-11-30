@@ -50,8 +50,7 @@ def compute_sasa_feature(pdb, alignment=None):
     protein_id = pdb.topology.select("protein")
     t = pdb.atom_slice(protein_id)
 
-    sasa = md.shrake_rupley(t, mode='residue')
-
+    sasa = md.shrake_rupley(t, mode='residue')[0]
     gap_offset = 0
     pdb_seq = alignment[0].seqA
     cluster_seq = alignment[0].seqB
@@ -60,7 +59,7 @@ def compute_sasa_feature(pdb, alignment=None):
     for i in range(len(pdb_seq)):
         if pdb_seq[i] == '-':
             gap_offset += 1
-            
+        else:    
             sasa_polarity_product += sasa[i-gap_offset] * sequence_analysis.get_aa_polarity(cluster_seq[i])
 
     return sasa_polarity_product
