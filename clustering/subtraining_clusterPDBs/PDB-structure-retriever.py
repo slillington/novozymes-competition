@@ -119,7 +119,7 @@ def downloadPdb(idlist):
 def main():
     #Read the cluster list into a file
     #clusters = pd.read_csv(r"C:\Users\steph\Box\OmalleyLabfiles\novozymes-enzyme-stability-prediction\code\databases\rankOrdered_clusters.txt",sep='\t')
-    clusters = pd.read_csv("rankOrdered_clusters.txt",sep='\t')
+    clusters = pd.read_csv("ranked_clusters.txt",sep='\t')
     #training_set = pd.read_csv(r"C:\Users\steph\Box\OmalleyLabfiles\novozymes-enzyme-stability-prediction\code\databases\train.csv")
     training_set = pd.read_csv("train.csv")
 
@@ -140,7 +140,7 @@ def main():
     idlist = {}
     #Now get PDB from seq for each seq
     for s in sequences.keys():
-        #print(s)
+        print(s)
         #print(sequences[s])
         pdbid, score = getPDBforSeq(sequence=sequences[s])
         idlist[pdbid] = s #s is the cutClusterName
@@ -148,7 +148,7 @@ def main():
     print(idlist)
 
     #Now call the batch script and download the PDBs
-    #downloadPdb(idlist)
+    downloadPdb(idlist)
 
 
 
