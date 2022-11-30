@@ -58,6 +58,7 @@ else:
 #Each value in seqs is a SeqRecord object which has several
 #characteristics includnig id, name, description, and seq (sequence)
 
+data = [] # features
 for si in seqs:
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
@@ -97,8 +98,27 @@ for si in seqs:
 
 
         #Map to the experimental structure
-        res, contacts = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
+    # get features:
+    raw = si.id.split('-')
+    tm = float(raw[1])[3:]
+    ph = float(raw[2])[3:]
+    x1 = sasa_feature
+    #charges
+    x2 = 0
+    x3 = 0
+    for aa in si.seq:
+        x2 += sequence_analysis.get_aa_charge(aa)
+        x3 += sequence_analysis.get_aa_volume(aa)
+    x4 = res["clus_alpha_agree"]
+    x5 = res["clus_beta_agree"]    
+    x6 = res["clus_coil_agree"]    
+    x7 = len(contacts["Hphobic_contacts"])
+    x8 = len(contacts["Disulfide_bonds"])
+    x9 = len(contacts["Salt_bridges"])
+    x10 = len(contacts["Hbond_contacts"])
+    data.append([tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
 
     #Print results
     print("SECONDARY STRUCTURE INFO")
@@ -108,3 +128,8 @@ for si in seqs:
     print("CONTACT INFO")
     for key in contacts:
         print(key,len(contacts[key]))
+
+with open(cluster+'_data.csv', 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(['tm','ph','sasa','charge','volume','helix','sheet','coil','n_phobic_contact','n_disulfide','n_saltbridge','n_hbond'])
+    writer.writerows(data)
