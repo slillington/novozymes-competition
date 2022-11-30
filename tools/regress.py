@@ -8,7 +8,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 
-dataset = np.loadtxt('dataset.txt')
+dataset = np.loadtxt('dataset.csv', delimiter=',')
 
 features = dataset[:, 1:]
 metrics = dataset[:, 0]
