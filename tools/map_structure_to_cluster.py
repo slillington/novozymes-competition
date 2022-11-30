@@ -15,7 +15,7 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/slillington/novozymes-competition/tools")
+sys.path.append("/home/mnguyen/novozymes-competition/tools")
 import sequence_analysis
 
 # 1-letter to 3-letter amp
@@ -28,9 +28,9 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = "/home/mnguyen/novozymes-competition/clustering/clusterSeqs"
+AFstructure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
+exp_structure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
 
 cluster = "972"
 
@@ -312,7 +312,7 @@ def compute_struct_metrics(pdb, alignment):
     
     return ss_res, contacts, sasa_feature
 
-
+"""
 ################## MAIN  METHOD ########################
 #Read in FASTA-formatted sequence file
 seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path,cluster+".fasta"),"r"),"fasta")]
@@ -365,7 +365,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
@@ -376,7 +376,7 @@ for si in seqs:
 
 
         #Map to the experimental structure
-        res, contacts = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
 
     #Print results
@@ -388,7 +388,7 @@ for si in seqs:
     for key in contacts:
         print(key,len(contacts[key]))
 
-
+"""
 
 
 
