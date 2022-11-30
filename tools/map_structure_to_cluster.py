@@ -15,7 +15,7 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/slillington/novozymes-competition/tools")
+sys.path.append("/home/mnguyen/novozymes-competition/tools")
 import sequence_analysis
 
 # 1-letter to 3-letter amp
@@ -28,9 +28,9 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = "/home/mnguyen/novozymes-competition/clustering/clusterSeqs"
+AFstructure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
+exp_structure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
 
 cluster = "972"
 
