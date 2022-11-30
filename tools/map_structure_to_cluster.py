@@ -34,7 +34,36 @@ exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtrai
 
 cluster = "972"
 
+def compute_sasa_feature(pdb, alignment=None):
+    """
+    Computes dot product between residue-specific SASA and polarity of residue
 
+    INPUTS
+     pdb: MDtraj md.load object of pdb
+     alignment: Bio.pairwise2 alignment object
+
+    OUTPUTS
+     dot product
+    """
+    
+    # remove non-protein residues:
+    protein_id = pdb.topology.select("protein")
+    t = pdb.atom_slice(protein_id)
+
+    sasa = md.shrake_rupley(t, mode='residue')
+
+    gap_offset = 0
+    pdb_seq = alignment[0].seqA
+    cluster_seq = alignment[0].seqB
+
+    sasa_polarity_product = 0
+    for i in range(len(pdb_seq)):
+        if pdb_seq[i] == '-':
+            gap_offset += 1
+            
+            sasa_polarity_product += sasa[i-gap_offset] * sequence_analysis.get_aa_polarity(cluster_seq[i])
+
+    return sasa_polarity_product
 
 def compute_contacts(pdb,alignment=None):
     """
@@ -251,8 +280,8 @@ def compute_struct_metrics(pdb, alignment):
     struct_alpha_agree = 0
     clus_beta_agree = 0
     struct_beta_agree = 0
-    clus_ss_agree = 0
-    struct_ss_agree = 0
+    clus_coil_agree = 0
+    struct_coil_agree = 0
 
     for i in range(len(pdb_seq)):
         if pdb_seq[i] == '-':
@@ -260,8 +289,8 @@ def compute_struct_metrics(pdb, alignment):
             
         else: #seq posn is not gap, check if same as cluster seq
             if dssp[i-gap_offset] == 'C': #unstructured
-                struct_ss_agree -= sequence_analysis.get_aa_secondarystructure(pdb_seq[i])
-                clus_ss_agree -= sequence_analysis.get_aa_secondarystructure(cluster_seq[i])
+                struct_coil_agree += sequence_analysis.get_aa_coilpropensity(pdb_seq[i])
+                clus_coil_agree += sequence_analysis.get_aa_coilpropensity(cluster_seq[i])
             elif dssp[i-gap_offset] == 'H': #helix
                 struct_alpha_agree += sequence_analysis.get_aa_alphapropensity(pdb_seq[i])
                 clus_alpha_agree += sequence_analysis.get_aa_alphapropensity(cluster_seq[i])
@@ -269,7 +298,7 @@ def compute_struct_metrics(pdb, alignment):
                 struct_beta_agree += sequence_analysis.get_aa_betapropensity(pdb_seq[i])
                 clus_beta_agree += sequence_analysis.get_aa_betapropensity(cluster_seq[i])
 
-    ss_res = {"pdb_ss_agree": struct_ss_agree, "clus_ss_agree": clus_ss_agree,
+    ss_res = {"pdb_coil_agree": struct_coil_agree, "clus_coil_agree": clus_coil_agree,
                 "pdb_alpha_agree": struct_alpha_agree, "clus_alpha_agree": clus_alpha_agree,
                 "pdb_beta_agree": struct_beta_agree, "clus_beta_agree": clus_beta_agree}
     
@@ -278,8 +307,10 @@ def compute_struct_metrics(pdb, alignment):
     ### CONTACT CHANGE PART ###
     contacts = compute_contacts(pdb, alignment)
 
-
-    return ss_res, contacts
+    ### SASA PART ###
+    sasa_feature = compute_sasa_feature(pdb, alignment)
+    
+    return ss_res, contacts, sasa_feature
 
 
 ################## MAIN  METHOD ########################
