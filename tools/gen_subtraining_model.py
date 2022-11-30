@@ -61,7 +61,7 @@ else:
 data = [] # features
 for si in seqs:
     raw = si.id.split('_')
-    print('==={}==='.format(raw))
+    print('\n==={}==='.format(raw))
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
     #alignment is a list of Alignment objects from which we'll pull seqA and seqB
@@ -102,8 +102,7 @@ for si in seqs:
         #Map to the experimental structure
         res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
-    # get features:
-    
+    # get features:    
     tm = float(raw[1][3:])
     ph = float(raw[2][3:])
     x1 = sasa_feature
