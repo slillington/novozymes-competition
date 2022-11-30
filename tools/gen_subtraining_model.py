@@ -12,7 +12,9 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/mnguyen/novozymes-competition/tools")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print(dir_path)
+sys.path.append(dir_path)
 import sequence_analysis
 from map_structure_to_cluster import compute_struct_metrics
 
@@ -26,11 +28,11 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/mnguyen/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
+AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
+exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/PDBfiles")
 
-cluster = "972"
+cluster = "972" #"18020"
 
 
 
@@ -81,8 +83,8 @@ for si in seqs:
     #print(alignment_exp)
 
     if alignment_af[0].score > alignment_exp[0].score:
-        print("AlphaFold alignment better")
-        print(format_alignment(*alignment_af[0]))
+        #print("AlphaFold alignment better")
+        #print(format_alignment(*alignment_af[0]))
         #print(alignment_af[0].seqA)
         #print(alignment_af[0].seqB)
 
@@ -93,8 +95,8 @@ for si in seqs:
         
 
     else:
-        print("Experimental structure alignment better")
-        print(format_alignment(*alignment_exp[0]))
+        #print("Experimental structure alignment better")
+        #print(format_alignment(*alignment_exp[0]))
         #print(alignment_exp[0].seqA)
         #print(alignment_exp[0].seqB)
 
@@ -122,13 +124,13 @@ for si in seqs:
     data.append([tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
 
     #Print results
-    print("SECONDARY STRUCTURE INFO")
-    for key in res:
-        print(key,res[key])
+    #print("SECONDARY STRUCTURE INFO")
+    #for key in res:
+    #    print(key,res[key])
 
-    print("CONTACT INFO")
-    for key in contacts:
-        print(key,len(contacts[key]))
+    #print("CONTACT INFO")
+    #for key in contacts:
+    #    print(key,len(contacts[key]))
 
 with open(cluster+'_data.csv', 'w') as f:
     writer = csv.writer(f)
