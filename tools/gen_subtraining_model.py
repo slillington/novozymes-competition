@@ -14,7 +14,7 @@ from Bio.pairwise2 import format_alignment
 #import local files
 sys.path.append("/home/slillington/novozymes-competition/tools")
 import sequence_analysis
-from map_structure_to_cluster import *
+from map_structure_to_cluster import compute_struct_metrics
 
 # 1-letter to 3-letter amp
 aa_1_3_map = {'A':'ALA', 'R':'ARG', 'N':'ASN', 'D':'ASP', 'B':'ASX', 'C':'CYS', 'E':'GLU', 'Q':'GLN',
