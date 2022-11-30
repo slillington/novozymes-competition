@@ -8,17 +8,22 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 
-dataset = np.loadtxt('dataset.txt')
+dataset = np.loadtxt('972_data.csv', delimiter=',', skiprows=1)
 
 features = dataset[:, 1:]
 metrics = dataset[:, 0]
+
+print('shape of features', np.shape(features))
+print('length of metrics', len(metrics))
+
+print('std dev of metrics', np.std(metrics))
 
 kf = KFold(n_splits=5, shuffle=True)
 train_rmse = np.zeros(5)
 test_rmse = np.zeros(5)
 
 i_split = 0
-for train_index, test_index in kf.split(patterns_all):
+for train_index, test_index in kf.split(features):
 
     print('\nSplit number', i_split)
     
@@ -31,7 +36,7 @@ for train_index, test_index in kf.split(patterns_all):
     features_test_scaled = scaler_features.transform(features_test)
     
     scaler_metrics = StandardScaler()
-    metrics_scaled = scaler_metrics.fit_transform(metrics_train)
+    metrics_train_scaled = scaler_metrics.fit_transform(metrics_train.reshape(-1, 1))
 
     model = LinearRegression()
     model.fit(features_train_scaled, metrics_train_scaled)
