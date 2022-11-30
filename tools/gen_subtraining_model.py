@@ -60,6 +60,8 @@ else:
 
 data = [] # features
 for si in seqs:
+    raw = si.id.split('_')
+    print('==={}==='.format(raw))
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
     #alignment is a list of Alignment objects from which we'll pull seqA and seqB
@@ -87,7 +89,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
@@ -101,9 +103,9 @@ for si in seqs:
         res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
     # get features:
-    raw = si.id.split('-')
-    tm = float(raw[1])[3:]
-    ph = float(raw[2])[3:]
+    
+    tm = float(raw[1][3:])
+    ph = float(raw[2][3:])
     x1 = sasa_feature
     #charges
     x2 = 0

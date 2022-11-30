@@ -312,7 +312,7 @@ def compute_struct_metrics(pdb, alignment):
     
     return ss_res, contacts, sasa_feature
 
-
+"""
 ################## MAIN  METHOD ########################
 #Read in FASTA-formatted sequence file
 seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path,cluster+".fasta"),"r"),"fasta")]
@@ -365,7 +365,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
@@ -376,7 +376,7 @@ for si in seqs:
 
 
         #Map to the experimental structure
-        res, contacts = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
 
     #Print results
@@ -388,7 +388,7 @@ for si in seqs:
     for key in contacts:
         print(key,len(contacts[key]))
 
-
+"""
 
 
 
