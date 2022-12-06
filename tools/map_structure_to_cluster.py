@@ -15,7 +15,8 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/mnguyen/novozymes-competition/tools")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
 import sequence_analysis
 
 # 1-letter to 3-letter amp
@@ -28,9 +29,9 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/mnguyen/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
+AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
+exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/PDBfiles")
 
 cluster = "972"
 
@@ -50,8 +51,7 @@ def compute_sasa_feature(pdb, alignment=None):
     protein_id = pdb.topology.select("protein")
     t = pdb.atom_slice(protein_id)
 
-    sasa = md.shrake_rupley(t, mode='residue')
-
+    sasa = md.shrake_rupley(t, mode='residue')[0]
     gap_offset = 0
     pdb_seq = alignment[0].seqA
     cluster_seq = alignment[0].seqB
@@ -60,7 +60,7 @@ def compute_sasa_feature(pdb, alignment=None):
     for i in range(len(pdb_seq)):
         if pdb_seq[i] == '-':
             gap_offset += 1
-            
+        else:    
             sasa_polarity_product += sasa[i-gap_offset] * sequence_analysis.get_aa_polarity(cluster_seq[i])
 
     return sasa_polarity_product
