@@ -12,6 +12,12 @@ import pandas as pd
 from subprocess import call
 
 import pytraj as pt
+#Need to create an AMBERHOME path
+amberhome = '/home/slillington/anaconda3/envs/cg_openmm/'
+os.popen('export AMBERHOME="%s"' %amberhome)
+
+#NOTE you may get an error "prmchk does not seem to be in path
+#In the pytleap file in <your conda env>/bin, change prmchk to prmchk2 at line 134 ish
 
 #import local files
 sys.path.append("/home/slillington/novozymes-competition/tools")
