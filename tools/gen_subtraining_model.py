@@ -12,7 +12,7 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/mnguyen/novozymes-competition/tools")
+sys.path.append("/home/slillington/novozymes-competition/tools")
 import sequence_analysis
 from map_structure_to_cluster import compute_struct_metrics
 
@@ -26,11 +26,11 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/mnguyen/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/mnguyen/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
+AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
+exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
 
-cluster = "972"
+cluster = "18020"
 
 
 
@@ -61,7 +61,7 @@ else:
 data = [] # features
 for si in seqs:
     raw = si.id.split('_')
-    print('==={}==='.format(raw))
+    #print('==={}==='.format(raw))
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
     #alignment is a list of Alignment objects from which we'll pull seqA and seqB
@@ -81,8 +81,8 @@ for si in seqs:
     #print(alignment_exp)
 
     if alignment_af[0].score > alignment_exp[0].score:
-        print("AlphaFold alignment better")
-        print(format_alignment(*alignment_af[0]))
+        #print("AlphaFold alignment better")
+        #print(format_alignment(*alignment_af[0]))
         #print(alignment_af[0].seqA)
         #print(alignment_af[0].seqB)
 
@@ -93,8 +93,8 @@ for si in seqs:
         
 
     else:
-        print("Experimental structure alignment better")
-        print(format_alignment(*alignment_exp[0]))
+        #print("Experimental structure alignment better")
+        #print(format_alignment(*alignment_exp[0]))
         #print(alignment_exp[0].seqA)
         #print(alignment_exp[0].seqB)
 
@@ -123,6 +123,7 @@ for si in seqs:
     data.append([tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
 
     #Print results
+    """
     print("SECONDARY STRUCTURE INFO")
     for key in res:
         print(key,res[key])
@@ -130,7 +131,7 @@ for si in seqs:
     print("CONTACT INFO")
     for key in contacts:
         print(key,len(contacts[key]))
-
+    """
 with open(cluster+'_data.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow(['tm','ph','sasa','charge','volume','helix','sheet','coil','n_phobic_contact','n_disulfide','n_saltbridge','n_hbond'])
