@@ -10,9 +10,14 @@ from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 dataset = np.loadtxt('972_data.csv', delimiter=',', skiprows=1)
+#dataset = np.loadtxt('972_data_cp.csv', delimiter=',', skiprows=1)
 
 features = dataset[:, 1:]
 metrics = dataset[:, 0]
+
+i_wt = 0
+features = features - features[i_wt, :]
+metrics = metrics - metrics[i_wt]
 
 print('shape of features', np.shape(features))
 print('length of metrics', len(metrics))
