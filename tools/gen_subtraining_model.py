@@ -32,7 +32,7 @@ seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
 AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
 exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/PDBfiles")
 
-cluster = "972" #"18020"
+cluster = '972' #"18020"
 
 
 
@@ -61,9 +61,9 @@ else:
 #characteristics includnig id, name, description, and seq (sequence)
 
 data = [] # features
-for si in seqs:
+for i, si in enumerate(seqs):
     raw = si.id.split('_')
-    print('\n==={}==='.format(raw))
+    #print('==={}==='.format(raw))
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
     #alignment is a list of Alignment objects from which we'll pull seqA and seqB
@@ -91,7 +91,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts, sasa_feature = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature, n_contact_by_group = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
@@ -102,9 +102,10 @@ for si in seqs:
 
 
         #Map to the experimental structure
-        res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature, n_contact_by_group = compute_struct_metrics(epdb, alignment_exp)
 
-    # get features:    
+    # get features:
+    
     tm = float(raw[1][3:])
     ph = float(raw[2][3:])
     x1 = sasa_feature
@@ -121,18 +122,28 @@ for si in seqs:
     x8 = len(contacts["Disulfide_bonds"])
     x9 = len(contacts["Salt_bridges"])
     x10 = len(contacts["Hbond_contacts"])
-    data.append([tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10])
+    data_si = [tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10]
+    if i == 0:
+        columns = ['tm','ph','sasa','charge','volume','helix','sheet','coil','n_phobic_contact','n_disulfide','n_saltbridge','n_hbond']
+
+    for key, val in n_contact_by_group.items():
+        data_si.append(val)
+        if i == 0:
+            columns.append('n_{}'.format(key))
+
+    data.append(data_si)
 
     #Print results
-    #print("SECONDARY STRUCTURE INFO")
-    #for key in res:
-    #    print(key,res[key])
+    """
+    print("SECONDARY STRUCTURE INFO")
+    for key in res:
+        print(key,res[key])
 
-    #print("CONTACT INFO")
-    #for key in contacts:
-    #    print(key,len(contacts[key]))
-
+    print("CONTACT INFO")
+    for key in contacts:
+        print(key,len(contacts[key]))
+    """
 with open(cluster+'_data.csv', 'w') as f:
     writer = csv.writer(f)
-    writer.writerow(['tm','ph','sasa','charge','volume','helix','sheet','coil','n_phobic_contact','n_disulfide','n_saltbridge','n_hbond'])
+    writer.writerow(columns)
     writer.writerows(data)
