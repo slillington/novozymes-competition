@@ -8,7 +8,7 @@ import sys
 import csv
 import pandas as pd
 from subprocess import call
-
+from collections import OrderedDict
 
 from Bio import SeqIO, pairwise2
 from Bio.Seq import Seq
@@ -28,6 +28,15 @@ aa_3_1_map ={aa_1_3_map[key]:key for key in aa_1_3_map.keys()}
 aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
+
+def get_key(val, my_dict):
+    for key, value in my_dict.items():
+        if val in value:
+            return key
+ 
+    return "key doesn't exist"
+
+aa_to_group = {aa: get_key(aa_1_3_map[aa], aa_groups) for aa in aa_1_3_map.keys()}
 
 seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
 AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
@@ -121,6 +130,14 @@ def compute_contacts(pdb,alignment=None):
     in_salt_bridges = np.zeros(t.n_residues)
     in_disulfide_bonds = np.zeros(t.n_residues)
 
+    # count contacts pair based on aa group
+    n_contact_by_group = OrderedDict([
+        ['pos-pos', 0], ['pos-neutral', 0], ['pos-special', 0], ['pos-hydrophobic', 0],
+        ['neg-neg', 0], ['neg-neutral', 0], ['neg-special', 0], ['neg-hydrophobic', 0],
+        ['neutral-neutral', 0], ['neutral-special', 0], ['neutral-hydrophobic', 0],
+        ['special-special', 0], ['special-hydrophobic', 0],
+    ])
+
     #regular contacts
     # assign contact if the distance bw pairs < rc
     # and characterize special contacts between:
@@ -149,6 +166,10 @@ def compute_contacts(pdb,alignment=None):
                 hydrophobic_contacts.append([i,j])
                 in_hydrophobic_contacts[[i,j]] = 1.
 
+            if "{}-{}".format(aa_to_group[posi_mut], aa_to_group[posj_mut]) in n_contact_by_group.keys():
+                n_contact_by_group["{}-{}".format(aa_to_group[posi_mut], aa_to_group[posj_mut])] += 1
+            elif "{}-{}".format(aa_to_group[posj_mut], aa_to_group[posi_mut]) in n_contact_by_group.keys():
+                n_contact_by_group["{}-{}".format(aa_to_group[posj_mut], aa_to_group[posi_mut])] += 1
 
     #disulfide bonds, H-bonds and salt bridges
     h_donors = ['ARG', 'ASN', 'GLN', 'HIS', 'LYS', 'SER', 'THR', 'TRP', 'TYR'] #https://www.imgt.org/IMGTeducation/Aide-memoire/_UK/aminoacids/charge/
@@ -200,7 +221,7 @@ def compute_contacts(pdb,alignment=None):
                 "Hbond_contacts": h_bonds, 
                 "Disulfide_bonds": disulfide_bonds}
 
-    return res_dict
+    return res_dict, n_contact_by_group
 
 
 
@@ -305,12 +326,12 @@ def compute_struct_metrics(pdb, alignment):
 
 
     ### CONTACT CHANGE PART ###
-    contacts = compute_contacts(pdb, alignment)
+    contacts, n_contact_by_group = compute_contacts(pdb, alignment)
 
     ### SASA PART ###
     sasa_feature = compute_sasa_feature(pdb, alignment)
     
-    return ss_res, contacts, sasa_feature
+    return ss_res, contacts, sasa_feature, n_contact_by_group
 
 """
 ################## MAIN  METHOD ########################
