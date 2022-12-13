@@ -15,11 +15,11 @@ import matplotlib.pyplot as plt
 
 ## CHANGE OPTIONS HERE TO MODIFY DATASETS USED, TYPE OF FIT ##################
 
-fname_dataset = 'datasets_cleaned/18020_data_clean.csv'
-i_wt = 84 # index of line in cleaned dataset with WT
+fname_dataset = 'dataset_combined.csv'
+i_wt = -1 # index of line in cleaned dataset with WT
 model_type = 'RF' # options: linear, RF, ANN, LASSO
-fname_dataset_validation = 'datasets_cleaned/972_data_clean.csv' # use None if don't want this
-i_wt_validation = 21
+fname_dataset_validation = 'datasets_cleaned/18020_data_clean.csv' # use None if don't want this
+i_wt_validation = 84
 
 ##############################################################################
 
@@ -28,9 +28,10 @@ dataset = np.loadtxt(fname_dataset, delimiter=',', skiprows=1)
 features = dataset[:, 1:]
 metrics = dataset[:, 0]
 
-# compute delta features and metrics 
-features = features - features[i_wt, :]
-metrics = metrics - metrics[i_wt]
+# compute delta features and metrics
+if fname_dataset != 'dataset_combined.csv':
+    features = features - features[i_wt, :]
+    metrics = metrics - metrics[i_wt]
 
 # load validation data and compute delta features and metrics
 if fname_dataset_validation is not None:
