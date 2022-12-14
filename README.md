@@ -17,7 +17,7 @@
     - *gen_subtraining_model.py* - uses map_structure_to_cluster.py functions to create dataset for ML model creation + training
     - *regress.py* - trains + tests a regression model for predicting Tm from sequence
 - **energies_from_ambertools**
-  - Contains .csv files with various energies for each test set pdb (**energies_test_set.csv**) and each training set pdbs (**energies_training.csv**) that were output by the protein language model [EMBER3D](https://github.com/kWeissenow/EMBER3D).
+  - Contains .csv files with various energies for each test set pdb (**energies_test_set.csv**) and each training set pdb (**energies_training.csv**) that were output by the protein language model [EMBER3D](https://github.com/kWeissenow/EMBER3D).
   - Energies (columns of .csv files):
     - e_angle, e_bond, e_dihedral, e_gb (generalized born), e_elec, e_elec14, e_vdw, e_vdw14, e_tot
   - Code:
