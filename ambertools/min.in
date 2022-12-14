@@ -1,6 +1,0 @@
-General minimization
-&cntrl
- imin=1, ncyc=10, maxcyc=20,
- ntb=0, igb=8, cut=12.
-/
- 
