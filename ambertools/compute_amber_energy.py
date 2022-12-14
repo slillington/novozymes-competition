@@ -31,7 +31,8 @@ pdb_list = []
 for file in os.listdir(pdb_path):
     if file.endswith(".pdb"):
         pdb_list.append(file)
-pdb_list.sort()
+# Sort the list of PDBs by the integer in the name
+pdb_list.sort(key=lambda x: int(x.split('_')[0]))
 
 # Make a list of the integers in the PDB names (preceding the underscore)
 pdb_ints = []

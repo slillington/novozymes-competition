@@ -13,7 +13,7 @@ import pytraj as pt
 from time import time
 from tqdm import tqdm
 
-tot_batches = 10
+tot_batches = 20
 this_batch = int(sys.argv[1])
 
 print(f'Current working directory: {os.getcwd()}')
@@ -34,10 +34,8 @@ pdb_list = []
 for file in os.listdir(pdb_path):
     if file.endswith(".pdb"):
         pdb_list.append(file)
-pdb_list.sort()
-
-# rewrite the list except replacing the = sign with \= so that it can be used in a bash command
-pdb_list2 = [i.replace("=", "\=") for i in pdb_list]
+# Sort the list of PDBs by the integer in the name
+pdb_list.sort(key=lambda x: int(x.split('_')[0]))
 
 # make a mask based on the batch
 def make_mask(this_batch,tot_batches):
@@ -59,7 +57,7 @@ pdb_Tms = [i.split("_")[1] for i in pdb_list]
 #%% Create a numpy array to store the energies
 energies = np.zeros((len(pdb_list), 9))
 
-for i,pdb in enumerate(tqdm(pdb_list2)):
+for i,pdb in enumerate(tqdm(pdb_list)):
     if mask[i] == 0: continue
     which_pdb = pdb_ints[i]
     this_pdb = f'{pdb_path}/{pdb}'
@@ -77,9 +75,9 @@ for i,pdb in enumerate(tqdm(pdb_list2)):
     call(pytleap_cmd) # Should output a .crd, .leap.pdb, .leap.prm, and leap.cmd
 
     # Minimize the structure to produce a minimized PDB using sander
-    prm = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}.leap.prm"
-    crd = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}.leap.crd"
-    outpdb = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}.leap.pdb"
+    prm = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}_repacked.leap.prm"
+    crd = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}_repacked.leap.crd"
+    outpdb = f"{ambertools_dir}/{which_pdb}/{which_pdb}_{pdb_Tms[i]}_repacked.leap.pdb"
     minin = f"{ambertools_dir}/min.in" # pre-made input file for sander
 
     sander_min_cmd = f"sander -O -i {minin} -p {prm} -c {crd} -o {outpdb}"
@@ -102,5 +100,5 @@ print(f'saving energies in this file: energies_training_batch_{this_batch}.csv')
 indices = [f'{pdb_ints[i]}.pdb' for i in range(len(pdb_ints))]
 labels = ['e_angle','e_bond','e_dihedral','e_gb','e_elec','e_elec14','e_vdw','e_vdw14','e_tot']
 df = pd.DataFrame(data=energies, columns=labels, index=indices)
-df.to_csv(f'energies_training_batch_{this_batch}.csv',float_format='%.5e'))
+df.to_csv(f'energies_training_batch_{this_batch}.csv',float_format='%.5e')
 
