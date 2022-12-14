@@ -2,6 +2,9 @@
 ## Contents
 - **databases**
   - contains the training and test datasets provided by Novozymes for the Kaggle competition.
+- **regression**
+  - trains and tests a regression model for predicting Tm from sequence
+  - It has a separate README.md. Check it out!
 - **clustering**
   - contains output from [MMseqs clustering](https://academic.oup.com/bioinformatics/article/32/9/1323/1744460) of training dataset protein sequences for which we have Tm measurements, PDB files from AlphaFold + the PDB that corresponds to training set sequence clusters, and code for procuring these structures.
   - Subdirectories:
