@@ -29,3 +29,13 @@
 |
 |       regress.py - trains + tests a regression model for predicting
 |        Tm from sequence
+|
+| ambertools - .csv files containing various energies (e.g. e_total, e_vdw,
+|  e_gb) for all the test set pdbs (energies_test_set.csv)
+|  and training set pdbs (energies_training.csv) that were output by the
+|  protein language model EMBER3D. The analysis python files (e.g.
+|  compute_amber_energy.py) and submission scripts for Pod are included.
+|
+| EMBER_files_Pod_address.txt - where you can find all the training set and
+|  test set .pdb files which were output by the protein language model
+|  EMBER3D and then refitted to include sidechains.

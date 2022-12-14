@@ -1,0 +1,6 @@
+All .pdb files are here:
+pod:/home/kshen/Share/novozyme/novozymes-competition/EMBER
+
+Originally EMBER3D output .pdb's of just the backbones - zip files are here:
+pod:/home/lobo/EMBER_output
+
