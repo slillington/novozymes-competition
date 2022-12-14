@@ -1,4 +1,0 @@
-min.in is an input file for energy minimization.
-Ambertools has a tool called sander that will read min.in
-It does 10 steps of energy minimization and 10 steps of conjugate gradient minimization.
-Fewer steps would run the code faster. 
