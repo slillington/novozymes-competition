@@ -12,9 +12,11 @@ from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/slillington/novozymes-competition/tools")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+print(dir_path)
+sys.path.append(dir_path)
 import sequence_analysis
-from map_structure_to_cluster import *
+from map_structure_to_cluster import compute_struct_metrics
 
 # 1-letter to 3-letter amp
 aa_1_3_map = {'A':'ALA', 'R':'ARG', 'N':'ASN', 'D':'ASP', 'B':'ASX', 'C':'CYS', 'E':'GLU', 'Q':'GLN',
@@ -26,11 +28,11 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
+AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
+exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/PDBfiles")
 
-cluster = "972"
+cluster = '972' #"18020"
 
 
 
@@ -58,7 +60,10 @@ else:
 #Each value in seqs is a SeqRecord object which has several
 #characteristics includnig id, name, description, and seq (sequence)
 
-for si in seqs:
+data = [] # features
+for i, si in enumerate(seqs):
+    raw = si.id.split('_')
+    #print('==={}==='.format(raw))
     #print("AF PDB seq is length: %i, aligned seq is length: %i" %(len(afpdb_seq),len(si.seq)))
     alignment_af = pairwise2.align.globalxs(afpdb_seq,si.seq,-2,-.5, one_alignment_only=True)
     #alignment is a list of Alignment objects from which we'll pull seqA and seqB
@@ -78,29 +83,58 @@ for si in seqs:
     #print(alignment_exp)
 
     if alignment_af[0].score > alignment_exp[0].score:
-        print("AlphaFold alignment better")
-        print(format_alignment(*alignment_af[0]))
+        #print("AlphaFold alignment better")
+        #print(format_alignment(*alignment_af[0]))
         #print(alignment_af[0].seqA)
         #print(alignment_af[0].seqB)
 
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature, n_contact_by_group = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
-        print("Experimental structure alignment better")
-        print(format_alignment(*alignment_exp[0]))
+        #print("Experimental structure alignment better")
+        #print(format_alignment(*alignment_exp[0]))
         #print(alignment_exp[0].seqA)
         #print(alignment_exp[0].seqB)
 
 
         #Map to the experimental structure
-        res, contacts = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature, n_contact_by_group = compute_struct_metrics(epdb, alignment_exp)
 
+    # get features:
+    
+    tm = float(raw[1][3:])
+    ph = float(raw[2][3:])
+    x1 = sasa_feature
+    #charges
+    x2 = 0
+    x3 = 0
+    for aa in si.seq:
+        x2 += sequence_analysis.get_aa_charge(aa)
+        x3 += sequence_analysis.get_aa_volume(aa)
+    x4 = res["clus_alpha_agree"]
+    x5 = res["clus_beta_agree"]    
+    x6 = res["clus_coil_agree"]    
+    x7 = len(contacts["Hphobic_contacts"])
+    x8 = len(contacts["Disulfide_bonds"])
+    x9 = len(contacts["Salt_bridges"])
+    x10 = len(contacts["Hbond_contacts"])
+    data_si = [tm,ph,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10]
+    if i == 0:
+        columns = ['tm','ph','sasa','charge','volume','helix','sheet','coil','n_phobic_contact','n_disulfide','n_saltbridge','n_hbond']
+
+    for key, val in n_contact_by_group.items():
+        data_si.append(val)
+        if i == 0:
+            columns.append('n_{}'.format(key))
+
+    data.append(data_si)
 
     #Print results
+    """
     print("SECONDARY STRUCTURE INFO")
     for key in res:
         print(key,res[key])
@@ -108,3 +142,8 @@ for si in seqs:
     print("CONTACT INFO")
     for key in contacts:
         print(key,len(contacts[key]))
+    """
+with open(cluster+'_data.csv', 'w') as f:
+    writer = csv.writer(f)
+    writer.writerow(columns)
+    writer.writerows(data)

@@ -8,14 +8,15 @@ import sys
 import csv
 import pandas as pd
 from subprocess import call
-
+from collections import OrderedDict
 
 from Bio import SeqIO, pairwise2
 from Bio.Seq import Seq
 from Bio.pairwise2 import format_alignment
 
 #import local files
-sys.path.append("/home/slillington/novozymes-competition/tools")
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path)
 import sequence_analysis
 
 # 1-letter to 3-letter amp
@@ -28,9 +29,18 @@ aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
 'neutral': ['SER', 'THR', 'ASN', 'GLN'], 'special': ['CYS', 'SEC', 'GLY', 'PRO'],
 'hydrophobic': ['ALA', 'VAL', 'ILE', 'LEU', 'MET', 'PHE', 'TYR', 'TRP']}
 
-seq_path = "/home/slillington/novozymes-competition/clustering/clusterSeqs"
-AFstructure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/AlphaFold_structures"
-exp_structure_path = "/home/slillington/novozymes-competition/clustering/subtraining_clusterPDBs/PDBfiles"
+def get_key(val, my_dict):
+    for key, value in my_dict.items():
+        if val in value:
+            return key
+ 
+    return "key doesn't exist"
+
+aa_to_group = {aa: get_key(aa_1_3_map[aa], aa_groups) for aa in aa_1_3_map.keys()}
+
+seq_path = os.path.join(dir_path, "../clustering/clusterSeqs")
+AFstructure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/AlphaFold_structures") 
+exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPDBs/PDBfiles")
 
 cluster = "972"
 
@@ -50,8 +60,7 @@ def compute_sasa_feature(pdb, alignment=None):
     protein_id = pdb.topology.select("protein")
     t = pdb.atom_slice(protein_id)
 
-    sasa = md.shrake_rupley(t, mode='residue')
-
+    sasa = md.shrake_rupley(t, mode='residue')[0]
     gap_offset = 0
     pdb_seq = alignment[0].seqA
     cluster_seq = alignment[0].seqB
@@ -60,7 +69,7 @@ def compute_sasa_feature(pdb, alignment=None):
     for i in range(len(pdb_seq)):
         if pdb_seq[i] == '-':
             gap_offset += 1
-            
+        else:    
             sasa_polarity_product += sasa[i-gap_offset] * sequence_analysis.get_aa_polarity(cluster_seq[i])
 
     return sasa_polarity_product
@@ -121,6 +130,14 @@ def compute_contacts(pdb,alignment=None):
     in_salt_bridges = np.zeros(t.n_residues)
     in_disulfide_bonds = np.zeros(t.n_residues)
 
+    # count contacts pair based on aa group
+    n_contact_by_group = OrderedDict([
+        ['pos-pos', 0], ['pos-neutral', 0], ['pos-special', 0], ['pos-hydrophobic', 0],
+        ['neg-neg', 0], ['neg-neutral', 0], ['neg-special', 0], ['neg-hydrophobic', 0],
+        ['neutral-neutral', 0], ['neutral-special', 0], ['neutral-hydrophobic', 0],
+        ['special-special', 0], ['special-hydrophobic', 0],
+    ])
+
     #regular contacts
     # assign contact if the distance bw pairs < rc
     # and characterize special contacts between:
@@ -149,6 +166,10 @@ def compute_contacts(pdb,alignment=None):
                 hydrophobic_contacts.append([i,j])
                 in_hydrophobic_contacts[[i,j]] = 1.
 
+            if "{}-{}".format(aa_to_group[posi_mut], aa_to_group[posj_mut]) in n_contact_by_group.keys():
+                n_contact_by_group["{}-{}".format(aa_to_group[posi_mut], aa_to_group[posj_mut])] += 1
+            elif "{}-{}".format(aa_to_group[posj_mut], aa_to_group[posi_mut]) in n_contact_by_group.keys():
+                n_contact_by_group["{}-{}".format(aa_to_group[posj_mut], aa_to_group[posi_mut])] += 1
 
     #disulfide bonds, H-bonds and salt bridges
     h_donors = ['ARG', 'ASN', 'GLN', 'HIS', 'LYS', 'SER', 'THR', 'TRP', 'TYR'] #https://www.imgt.org/IMGTeducation/Aide-memoire/_UK/aminoacids/charge/
@@ -200,7 +221,7 @@ def compute_contacts(pdb,alignment=None):
                 "Hbond_contacts": h_bonds, 
                 "Disulfide_bonds": disulfide_bonds}
 
-    return res_dict
+    return res_dict, n_contact_by_group
 
 
 
@@ -305,14 +326,14 @@ def compute_struct_metrics(pdb, alignment):
 
 
     ### CONTACT CHANGE PART ###
-    contacts = compute_contacts(pdb, alignment)
+    contacts, n_contact_by_group = compute_contacts(pdb, alignment)
 
     ### SASA PART ###
     sasa_feature = compute_sasa_feature(pdb, alignment)
     
-    return ss_res, contacts, sasa_feature
+    return ss_res, contacts, sasa_feature, n_contact_by_group
 
-
+"""
 ################## MAIN  METHOD ########################
 #Read in FASTA-formatted sequence file
 seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path,cluster+".fasta"),"r"),"fasta")]
@@ -365,7 +386,7 @@ for si in seqs:
 
         #Proceed with doing structural mapping to the AlphaFold structure
         #mutate_pdb(os.path.join(AFstructure_path,cluster+".pdb"), alignment_af)
-        res, contacts = compute_struct_metrics(afpdb,alignment_af)
+        res, contacts, sasa_feature = compute_struct_metrics(afpdb,alignment_af)
         
 
     else:
@@ -376,7 +397,7 @@ for si in seqs:
 
 
         #Map to the experimental structure
-        res, contacts = compute_struct_metrics(epdb, alignment_exp)
+        res, contacts, sasa_feature = compute_struct_metrics(epdb, alignment_exp)
 
 
     #Print results
@@ -388,7 +409,7 @@ for si in seqs:
     for key in contacts:
         print(key,len(contacts[key]))
 
-
+"""
 
 
 
