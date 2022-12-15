@@ -115,7 +115,7 @@ def compute_contacts(pdb,alignment=None):
                 gap_offset[i] = go
                 i +=1
 
-        print(len(gap_offset))
+        #print(len(gap_offset))
 
 
   # === Contacts ===
