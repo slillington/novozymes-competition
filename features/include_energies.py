@@ -1,3 +1,10 @@
+"""
+Combines the energies from the energies_from_ambertools directory 
+with the features from the without_energies directory (which was made by
+tools/gen_subtraining_model.py and copied to the features directory).
+Sam Lobo
+"""
+
 #%%
 import pandas as pd
 import numpy as np

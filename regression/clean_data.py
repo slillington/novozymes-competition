@@ -1,5 +1,5 @@
 """
-Cleaning the features
+Cleaning the features (from the `features` directory)
 Sam Lobo
 """
 #%%
