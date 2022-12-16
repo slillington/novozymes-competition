@@ -75,6 +75,7 @@ for train_index, test_index in kf.split(features):
     if model_type == 'RF': # default RF settings
         model = RandomForestRegressor()
         model.fit(features_train_scaled, metrics_train_scaled.flatten())
+        print('coefficients', model.feature_importances_)
     elif model_type == 'linear':
         model = LinearRegression()
         model.fit(features_train_scaled, metrics_train_scaled)        
