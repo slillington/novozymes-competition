@@ -2,7 +2,7 @@ import numpy as np
 
 ph_target = 7.5
 ph_tol = 0.5
-exclude_set = '21069'
+exclude_set = '22093'
 name = 'dataset_combined_exclude{}'.format(exclude_set)
 
 data_tags = ['972', '13268', '17481', '5134', '24305', '14603', '16540', '17775', '17926', '21069', '22093', '26901', '18020']
