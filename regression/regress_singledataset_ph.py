@@ -16,11 +16,12 @@ import matplotlib.pyplot as plt
 
 ## CHANGE OPTIONS HERE TO MODIFY DATASETS USED, TYPE OF FIT ##################
 
-exclude_set = '22093'
-fname_dataset = 'dataset_combined_exclude{}_ph7.5.csv'.format(exclude_set)
+exclude_set = '972'
+#fname_dataset = 'dataset_combined_exclude{}_ph7.5.csv'.format(exclude_set)
+fname_dataset = 'dataset_combined_exclude{}_ph7.5_tol1.0.csv'.format(exclude_set)
 i_wt = -1 # index of line in cleaned dataset with WT
 model_type = 'RF' # options: linear, RF, ANN, LASSO
-fname_dataset_validation = 'datasets_ph/{}_ph7.5.csv'.format(exclude_set) # use None if don't want this
+fname_dataset_validation = 'datasets_ph/{}_ph7.5_tol1.0.csv'.format(exclude_set) # use None if don't want this
 
 ##############################################################################
 
