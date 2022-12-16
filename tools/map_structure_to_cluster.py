@@ -22,7 +22,7 @@ import sequence_analysis
 # 1-letter to 3-letter amp
 aa_1_3_map = {'A':'ALA', 'R':'ARG', 'N':'ASN', 'D':'ASP', 'B':'ASX', 'C':'CYS', 'E':'GLU', 'Q':'GLN',
 'G':'GLY', 'H':'HIS', 'I':'ILE', 'L':'LEU', 'K':'LYS', 'M':'MET', 'F':'PHE', 'P':'PRO', 'S':'SER',
-'T':'THR', 'W':'TRP', 'Y':'TYR', 'V':'VAL'}
+'T':'THR', 'W':'TRP', 'Y':'TYR', 'V':'VAL', '-':'-'}
 aa_3_1_map ={aa_1_3_map[key]:key for key in aa_1_3_map.keys()}
 
 aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
