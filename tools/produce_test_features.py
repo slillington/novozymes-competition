@@ -34,7 +34,7 @@ from map_structure_to_cluster import compute_struct_metrics
 # 1-letter to 3-letter amp
 aa_1_3_map = {'A':'ALA', 'R':'ARG', 'N':'ASN', 'D':'ASP', 'B':'ASX', 'C':'CYS', 'E':'GLU', 'Q':'GLN',
 'G':'GLY', 'H':'HIS', 'I':'ILE', 'L':'LEU', 'K':'LYS', 'M':'MET', 'F':'PHE', 'P':'PRO', 'S':'SER',
-'T':'THR', 'W':'TRP', 'Y':'TYR', 'V':'VAL'}
+'T':'THR', 'W':'TRP', 'Y':'TYR', 'V':'VAL', '-':'-'}
 aa_3_1_map ={aa_1_3_map[key]:key for key in aa_1_3_map.keys()}
 
 aa_groups = {'pos': ['ARG', 'HIS', 'LYS'], 'neg': ['ASP', 'GLU'],
@@ -47,9 +47,9 @@ exp_structure_path = os.path.join(dir_path, "../clustering/subtraining_clusterPD
 
 # Look at the subset of clusters that My curated
 # the number is the name of the pdb that is the centroid of the cluster
-clusters = [972, 5134, 12642, 13268, 14603, 16540, 17481, 17775, 17926, 18020, 21069, 22093, 24305, 25918, 26901]
+#clusters = [972, 5134, 12642, 13268, 14603, 16540, 17481, 17775, 17926, 18020, 21069, 22093, 24305, 25918, 26901]
 # Turn into strings instead of ints
-clusters = [str(cluster) for cluster in clusters]
+clusters = ['test_set']
 
 for cluster in clusters:
     print(f'Looking at pdbs in the cluster with centroid {cluster}.pdb')
@@ -57,9 +57,15 @@ for cluster in clusters:
     seqs = [s for s in SeqIO.parse(open(os.path.join(seq_path, cluster+".fasta"), "r"), "fasta")]
 
     #Read in the structure file and pull out the sequence
-    epdb = md.load(os.path.join(exp_structure_path,cluster+".pdb"))
-    etop = epdb.topology
-    epdb_seq = Seq(etop.to_fasta()[0])
+
+    if cluster == 'test_set':
+        epdb = md.load(os.path.join(exp_structure_path,"wildtype_structure_prediction_af2.pdb"))
+        etop = epdb.topology
+        epdb_seq = Seq(etop.to_fasta()[0])
+    else:
+        epdb = md.load(os.path.join(exp_structure_path,cluster+".pdb"))
+        etop = epdb.topology
+        epdb_seq = Seq(etop.to_fasta()[0])
 
     if os.path.isfile(os.path.join(AFstructure_path,cluster+".pdb")):
         afpdb = md.load(os.path.join(AFstructure_path,cluster+".pdb"))
@@ -68,7 +74,7 @@ for cluster in clusters:
     else:
         afpdb = epdb
         aftop = epdb.topology
-        afpdb_seq = afpdb_seq
+        afpdb_seq = epdb_seq
 
     #Perform global alignment between two sequences
     #Each value in seqs is a SeqRecord object which has several
@@ -99,8 +105,8 @@ for cluster in clusters:
 
         # get features:
         pdb_num = int(raw[0])
-        tm = float(raw[1][3:])
-        ph = float(raw[2][3:])
+        tm = 0
+        ph = 8
         x1 = sasa_feature
         #charges
         x2 = 0;   x3 = 0
