@@ -13,8 +13,8 @@ import pytraj as pt
 from time import time
 from tqdm import tqdm
 
-tot_batches = 20
 this_batch = int(sys.argv[1])
+tot_batches = int(sys.argv[2])
 
 print(f'Current working directory: {os.getcwd()}')
 
@@ -94,6 +94,11 @@ for i,pdb in enumerate(tqdm(pdb_list)):
 
     # Go back to the parent directory
     os.chdir('..')
+
+    # Save every 500 iterations just in case the job fails early
+    if i % 500 == 0:
+        np.savetxt('energies_checkpoint_batch_{this_batch}.csv', energies, delimiter=',')
+        print('Saved energies.csv after 500 iterations')
 
 # Save the energies to a csv file
 print(f'saving energies in this file: energies_training_batch_{this_batch}.csv')

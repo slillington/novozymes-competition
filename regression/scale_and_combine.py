@@ -21,11 +21,6 @@ def scale_and_combine():
     # Get a list of just the centroid numbers in the feature files list
     cluster_centroids = [int(x.split('_')[2]) for x in cleaned_data_files]
 
-    # # turns out we deleted 13268 because it had a fake melting point of 25
-    # # so we need to delete it from the list of centroids and from the list of files
-    # cluster_centroids.remove(13268)
-    # cleaned_data_files.remove('cleaned_cluster_13268_features.csv')
-
     # Make a list of dataframes from each cluster
     dataframes = []
     for file in cleaned_data_files:
@@ -118,15 +113,26 @@ def scale_and_combine_without_one_cluster(drop_cluster):
 
         # # Filtering by pH is surely important! Play with this later.
         # # delete pH's that are smaller than 5
-        # df = df[df['ph'] >= 5]
+        df = df[df['ph'] >= 7]
+        # and larger than 8.5
+        df = df[df['ph'] <= 9]
 
         # If you want to ignore the energy features, uncomment this:
         # Filtering out the energy features (beginning with e_)
         # df = df.filter(regex='^(?!e_)') # This is a regex made by Copilot, test it before using
 
         # Drop the e_vdw and e_vdw14 columns
-        # df = df.drop(columns=['e_vdw', 'e_vdw14'])
+        # df = df.drop(columns=['e_elec14', 'e_vdw14'])
 
+        # Drop the rows from 'ph' to 'n_special_hydrophobic'
+        # df = df.drop(columns=df.columns[4:8])
+
+        df = df.filter(regex='^(?!n_)') # This is a regex made by Copilot, test it before using
+
+        # In each column, replace any value above 99th percentile to the 99th percentil value
+        df = df.clip(upper=df.quantile(0.99), axis=1)
+        # do the same for below the 1st percentile
+        df = df.clip(lower=df.quantile(0.01), axis=1)
 
         # Make every column (except the Tm & pH columns!) have a mean of 0
         df.iloc[:, 2:] -= df.iloc[:, 1:].mean()

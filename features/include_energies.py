@@ -25,7 +25,7 @@ ambertools_dir = os.path.join(dir_path, "../energies_from_ambertools")
 # open the energies_from_ambertools.csv file
 energies_df = pd.read_csv(os.path.join(ambertools_dir, "energies_training.csv"),index_col=0)
 # remove the '.pdb' from the index of the energies_df and turn to int
-energies_df.index = [int(f.split('.')[0]) for f in energies_df.index]
+energies_df.index = [int(index) for index in energies_df.index]
 
 # %%
 # Let's look at cluster_972_features.csv first
