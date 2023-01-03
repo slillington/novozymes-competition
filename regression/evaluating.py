@@ -41,7 +41,7 @@ for column in dataframes[0].columns:
         axes[i].set_xlabel(column)
     plt.show()
 
-
+#%% Plot the 
 
 
 # %%

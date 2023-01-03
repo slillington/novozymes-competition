@@ -25,17 +25,17 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 ## CHANGE OPTIONS HERE TO MODIFY DATASETS USED, TYPE OF FIT ##################
 # load the dataframe, features (X), and metric (y = melting points) for the combined dataset
 # adjust the scale_and_combine function in scale_and_combine.py to see if you can get better results
-validation_cluster = 16540
+validation_cluster = 21069
 df_combined, X, y = scale_and_combine_without_one_cluster(validation_cluster)
 X, y = shuffle(X, y, random_state=0)
 
 
 # df_combined, X, y = scale_and_combine()
-model_type = 'RF' # options: linear, RF, ANN, LASSO
+model_type = 'LASSO' # options: linear, RF, ANN, LASSO
 print(f'MODEL TYPE: {model_type}')
 
 # print notes
-Notes = 'Dropped pH column'
+Notes = 'Dropping no columns'
 print(f'Notes: {Notes}')
 
 # Load the validation dataset and store its features and melting points
@@ -47,10 +47,6 @@ y_validation = df_validation_cluster['tm'].values
 X_validation, y_validation = shuffle(X_validation, y_validation, random_state=0)
 
 #%%
-
-# print('shape of features', np.shape(X))
-# print('length of metrics', len(y))
-# print('std dev of metrics', np.std(y))
 
 K = 10 # number of folds
 kf = KFold(n_splits=K, shuffle=True)
@@ -87,7 +83,7 @@ for train_index, test_index in kf.split(X):
         model = MLPRegressor(hidden_layer_sizes=(35,35,), max_iter=10000)
         model.fit(X_train, y_train.flatten())
     elif model_type == 'LASSO': # alpha parameter 0.01
-        model = Lasso(alpha=0.005)
+        model = Lasso(alpha=0.002)
         model.fit(X_train, y_train)
         # print('coefficients')
         # print(model.coef_)
