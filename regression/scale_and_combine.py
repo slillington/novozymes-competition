@@ -126,6 +126,9 @@ def scale_and_combine_without_one_cluster(drop_cluster):
         # and larger than 8.5
         df = df[df['ph'] <= 9]
 
+        # drop the 'ph' column
+        # df = df.drop(columns=['ph'])
+
         # If you want to ignore the energy features, uncomment this:
         # Filtering out the energy features (beginning with e_)
         # df = df.filter(regex='^(?!e_)') # This is a regex made by Copilot, test it before using
@@ -188,7 +191,7 @@ def scale_and_combine_without_one_cluster(drop_cluster):
     X = combined_df.iloc[:, 1:].values
     y = combined_df['tm'].values
 
-    return combined_df, X_train, y_train # X is the features, y is ΔTm
+    return combined_df, X, y # X is the features, y is ΔTm
 
 #%%
 if __name__ == '__main__':

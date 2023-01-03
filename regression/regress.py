@@ -31,11 +31,11 @@ X, y = shuffle(X, y, random_state=0)
 
 
 # df_combined, X, y = scale_and_combine()
-model_type = 'LASSO' # options: linear, RF, ANN, LASSO
-print(f'MODEL TYPE: {model_type}\n')
+model_type = 'RF' # options: linear, RF, ANN, LASSO
+print(f'MODEL TYPE: {model_type}')
 
 # print notes
-Notes = 'ignoring features starting with n_'
+Notes = 'Dropped pH column'
 print(f'Notes: {Notes}')
 
 # Load the validation dataset and store its features and melting points
