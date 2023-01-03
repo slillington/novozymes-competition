@@ -20,6 +20,7 @@ def scale_and_combine():
     cleaned_data_files.sort(key=lambda x: int(x.split('_')[2]))
     # Get a list of just the centroid numbers in the feature files list
     cluster_centroids = [int(x.split('_')[2]) for x in cleaned_data_files]
+    # The test set is called test set "cluster 32559" since that's the pdb of the WT
 
     # Make a list of dataframes from each cluster
     dataframes = []
@@ -81,7 +82,13 @@ def scale_and_combine():
     X = combined_df.iloc[:, 1:].values
     y = combined_df['tm'].values
 
-    return combined_df, X, y # X is the features, y is ΔTm
+    # Make X_train everything except the key cluster32559
+    X_train = combined_df.drop('cluster32559', level=0).iloc[:, 1:].values
+    y_train = combined_df.drop('cluster32559', level=0)['tm'].values
+
+    # Make X_test the key cluster32559
+    X_test = combined_df.loc['cluster32559'].iloc[:, 1:]
+    return combined_df, X_train, y_train, X_test # X is the features, y is ΔTm
 
 # make sure the input argument cluster is an int
 def scale_and_combine_without_one_cluster(drop_cluster):
@@ -93,6 +100,8 @@ def scale_and_combine_without_one_cluster(drop_cluster):
     cleaned_data_path = os.path.join(dir_path, 'datasets_cleaned')
     # List the files in the data folder
     cleaned_data_files = os.listdir(cleaned_data_path)
+    # delete the test set (cluster 32559) from the list
+    cleaned_data_files = [file for file in cleaned_data_files if file != 'cleaned_cluster_32559_features.csv']
     # Sort the feature files list by the centroid number
     cleaned_data_files.sort(key=lambda x: int(x.split('_')[2]))
     # Get a list of just the centroid numbers in the feature files list
@@ -127,7 +136,7 @@ def scale_and_combine_without_one_cluster(drop_cluster):
         # Drop the rows from 'ph' to 'n_special_hydrophobic'
         # df = df.drop(columns=df.columns[4:8])
 
-        df = df.filter(regex='^(?!n_)') # This is a regex made by Copilot, test it before using
+        # df = df.filter(regex='^(?!n_)') # This is a regex made by Copilot, test it before using
 
         # In each column, replace any value above 99th percentile to the 99th percentil value
         df = df.clip(upper=df.quantile(0.99), axis=1)
@@ -179,10 +188,10 @@ def scale_and_combine_without_one_cluster(drop_cluster):
     X = combined_df.iloc[:, 1:].values
     y = combined_df['tm'].values
 
-    return combined_df, X, y # X is the features, y is ΔTm
+    return combined_df, X_train, y_train # X is the features, y is ΔTm
 
 #%%
 if __name__ == '__main__':
-    combined_df, X, y = scale_and_combine()
+    combined_df, X, y, X_test = scale_and_combine()
     print(combined_df)
 

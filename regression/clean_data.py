@@ -16,7 +16,7 @@ if not os.path.exists(output_dir):
     os.makedirs(output_dir)    
 
 # Note the path of the data folder
-raw_data_path = os.path.join(dir_path, '../features/with_energies')
+raw_data_path = os.path.join(dir_path, '../training_features/with_energies')
 # List the files in the data folder
 feature_files = os.listdir(raw_data_path)
 # Sort the feature files list by the centroid number
