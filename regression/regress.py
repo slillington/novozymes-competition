@@ -25,7 +25,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 ## CHANGE OPTIONS HERE TO MODIFY DATASETS USED, TYPE OF FIT ##################
 # load the dataframe, features (X), and metric (y = melting points) for the combined dataset
 # adjust the scale_and_combine function in scale_and_combine.py to see if you can get better results
-validation_cluster = 21069
+validation_cluster = 24305
 df_combined, X, y = scale_and_combine_without_one_cluster(validation_cluster)
 X, y = shuffle(X, y, random_state=0)
 
@@ -72,6 +72,15 @@ for train_index, test_index in kf.split(X):
     if model_type == 'RF': # default RF settings
         model = RandomForestRegressor()
         model.fit(X_train, y_train.flatten())
+        print('coefficients', model.feature_importances_)
+        # Find the coefficients of the features in the model
+        coefficients = model.feature_importances_
+        # Find the names of the features that have been removed by LASSO
+        removed_features = [feature for feature, coef in zip(df_combined.columns[1:], coefficients) if coef < 0.01]
+        print("Highly reduced features:", removed_features)
+
+        # Find the names and coefficients of the remaining features
+        remaining_features = [(feature, coef) for feature, coef in zip(df_combined.columns[1:], coefficients) if coef >= 0.01]
     elif model_type == 'linear':
         model = LinearRegression()
         model.fit(X_train, y_train)        
@@ -83,9 +92,18 @@ for train_index, test_index in kf.split(X):
         model = MLPRegressor(hidden_layer_sizes=(35,35,), max_iter=10000)
         model.fit(X_train, y_train.flatten())
     elif model_type == 'LASSO': # alpha parameter 0.01
-        model = Lasso(alpha=0.002)
+        model = Lasso(alpha=0.005)
         model.fit(X_train, y_train)
-        # print('coefficients')
+        print('coefficients')
+        # Find the coefficients of the features in the model
+        coefficients = model.coef_
+        # Find the names of the features that have been removed by LASSO
+        removed_features = [feature for feature, coef in zip(df_combined.columns[1:], coefficients) if coef == 0]
+        print("Removed features:", removed_features)
+
+        # Find the names and coefficients of the remaining features
+        remaining_features = [(feature, coef) for feature, coef in zip(df_combined.columns[1:], coefficients) if coef != 0]
+        print("Remaining features:", remaining_features)
         # print(model.coef_)
         # print('intercept')
         # print(model.intercept_)

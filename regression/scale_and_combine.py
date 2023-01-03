@@ -37,17 +37,44 @@ def scale_and_combine():
 
         # # Filtering by pH is surely important! Play with this later.
         # # delete pH's that are smaller than 5
-        # df = df[df['ph'] >= 5]
+        # df = df[df['ph'] >= 7]
+        # # and larger than 8.5
+        # df = df[df['ph'] <= 9]
+
+        # drop some columns (recommended by LASSO)
+        # cols A
+        # df = df.drop(columns=['n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic', 'n_neutral-neutral', 'n_neutral-special', 'n_neutral-hydrophobic', 'n_special-special', 'n_special-hydrophobic', 'e_angle', 'e_elec', 'e_tot'])
+        # cols B
+        # df = df.drop(columns=['helix', 'n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic', 'n_neutral-special', 'n_neutral-hydrophobic', 'n_special-special', 'e_tot'])
+        # cols C
+        # df = df.drop(columns=['n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic','n_neutral-special','n_neutral-hydrophobic','n_special-special','e_vdw14','e_elec14'])
+        # drop the 'ph' column
+        # df = df.drop(columns=['ph'])
 
         # If you want to ignore the energy features, uncomment this:
         # Filtering out the energy features (beginning with e_)
         # df = df.filter(regex='^(?!e_)') # This is a regex made by Copilot, test it before using
 
+        # Drop the e_vdw and e_vdw14 columns
+        # df = df.drop(columns=['e_elec14', 'e_vdw14'])
+
+        # Drop the rows from 'ph' to 'n_special_hydrophobic'
+        # df = df.drop(columns=df.columns[4:8])
+
+        # df = df.filter(regex='^(?!n_)') # This is a regex made by Copilot, test it before using
+
+        # In each column, replace any value above 99th percentile to the 99th percentil value
+        df = df.clip(upper=df.quantile(0.99), axis=1)
+        # do the same for below the 1st percentile
+        df = df.clip(lower=df.quantile(0.01), axis=1)
+
         # Make every column (except the Tm & pH columns!) have a mean of 0
         df.iloc[:, 2:] -= df.iloc[:, 1:].mean()
         # and a standard deviation of 1 (this is called standardizing)
         df.iloc[:, 2:] /= df.iloc[:, 1:].std()
-        # Later play with NORMALIZING instead of standardizing ^
+        # # This is an alternative block to normalize instead of standardizing
+        # # normalize every column (except the Tm & pH columns!)
+        # df.iloc[:, 2:] /= df.iloc[:, 1:].abs().max()
 
         # Subtract the Tm column by the Tm with index = cluster_centroids[i]
         try: df['tm'] = df['tm'] - df.loc[cluster_centroids[i], 'tm']
@@ -82,11 +109,11 @@ def scale_and_combine():
     X = combined_df.iloc[:, 1:].values
     y = combined_df['tm'].values
 
-    # Make X_train everything except the key cluster32559
+    # Make X_train everything except the key cluster32559 (the test set)
     X_train = combined_df.drop('cluster32559', level=0).iloc[:, 1:].values
     y_train = combined_df.drop('cluster32559', level=0)['tm'].values
 
-    # Make X_test the key cluster32559
+    # Make X_test the key cluster32559 (the test set)
     X_test = combined_df.loc['cluster32559'].iloc[:, 1:]
     return combined_df, X_train, y_train, X_test # X is the features, y is ΔTm
 
@@ -126,6 +153,13 @@ def scale_and_combine_without_one_cluster(drop_cluster):
         # and larger than 8.5
         df = df[df['ph'] <= 9]
 
+        # drop some columns (recommended by LASSO)
+        # cols A
+        # df = df.drop(columns=['n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic', 'n_neutral-neutral', 'n_neutral-special', 'n_neutral-hydrophobic', 'n_special-special', 'n_special-hydrophobic', 'e_angle', 'e_elec', 'e_tot'])
+        # cols B
+        # df = df.drop(columns=['helix', 'n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic', 'n_neutral-special', 'n_neutral-hydrophobic', 'n_special-special', 'e_tot'])
+        # cols C
+        # df = df.drop(columns=['n_disulfide', 'n_pos-neutral', 'n_pos-special', 'n_pos-hydrophobic', 'n_neg-neg', 'n_neg-hydrophobic','n_neutral-special','n_neutral-hydrophobic','n_special-special','e_vdw14','e_elec14'])
         # drop the 'ph' column
         # df = df.drop(columns=['ph'])
 
